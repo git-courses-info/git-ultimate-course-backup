@@ -168,3 +168,19 @@ Also:
 
 - Start the rebase operation with the parent of the commit you want to drop.\
   `git rebase -i ID~1 or ID^`
+
+### 11. Rewarding a Commit
+
+- To reward a commit message, use interactive rebasing.\
+  In the given options, chose `reword`.
+
+### 12. Re-ordering Commits
+
+- To re-order a commits, use interactive rebasing.\
+  Then just move the commit where you want.
+
+### 13. Squashing Commits
+
+- To squash commits, use interactive rebasing.\
+   Then chose the `squash` option for all children commits. You may reorder them first if needed.\
+  If you want to keep just the name of the parent commit, use `fixup` instead of `squash`.

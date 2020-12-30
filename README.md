@@ -184,3 +184,5 @@ Also:
 - To squash commits, use interactive rebasing.\
    Then chose the `squash` option for all children commits. You may reorder them first if needed.\
   If you want to keep just the name of the parent commit, use `fixup` instead of `squash`.
+
+test

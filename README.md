@@ -185,4 +185,9 @@ Also:
    Then chose the `squash` option for all children commits. You may reorder them first if needed.\
   If you want to keep just the name of the parent commit, use `fixup` instead of `squash`.
 
-test
+### 14. Splitting a Commit
+
+- To split a commit, use interactive rebasing.\
+  Chose to edit the commit and the while the HEAD is on the commit you want to split, type `git reset HEAD^`, to go to its parent i.e. to the state you had before you made this commit./
+  Note: default value of `reset` is `mixed` which takes all the changes to the working directory.\
+  Now you can stage and commit them separately.

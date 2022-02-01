@@ -1,10 +1,182 @@
 # ultimate-git-course
 
+A course from codewithmosh.com
+
 NOTE: These notes go together with the cheat sheet that was provided by the course, which also has some extra notes, about some cmds that where missing.
 
-## 5. COLLABORATION
+### 1. Getting started
 
-A course from codewithmosh.com
+6. Configuration: specify: name, email, default editor, line ending. Specify in 3 levels:
+
+- SYSTEM all users
+- GLOBAL all repositories of current user
+- LOCAL current repository
+- e.g. `git config --global user.name "Fotios Tsakiris"`
+- `git config --global core.editor "code --wait"`
+- To edit the configuration file: `git config --global -e`
+- `end of lines`:
+- In windows they are specified with 2 special characters `\r` and `\n`, on macs and linux with `\n`. So we need to modify `core.autocrlf`. So for macs/linux we type: `git config --global core.autocrlf input` and windows `... true`
+
+7. Git Help
+
+- `git -h` or `git -help`
+
+### 2. Creating snapshots
+
+- `git init`, `ls -a`, `open .git` !!! remove: `rm -rf .git`
+
+4. Staging area
+
+- `echo hello > file1.txt`, appent: `echo hello >> file1.txt`
+- just `git commit` Write short and under it a long description.
+
+7. Skip staging area
+
+- `git commit -am "message" `
+
+8. renaming/movigs files `git mv main.js file1.js`
+9. Ignoring files ...
+
+- `git rm -h`, removing file from staging area: `git rm --cached logs.js`
+- go to `github/github/gitignore` to see templates.
+
+11. Short status: `git status -s`
+12. Viewing staged and unstaged changes: `git diff --staged `
+13. Use vscode as default diff tool: `git config --global diff.tool vscode`.
+
+- Next is how to launch vscode: `git config --global difftool.vscode.cmd "code --wait --diff $LOCAL $REMOTE"`
+- Now to check diffs type: `git difftool --staged`
+
+14. View history everything after `log` is optional: `git log --oneline --reverse`
+15. Show the changes of a commit: `git show id` or git `git show HAED~2`
+
+- to see only one file: `git show HAED~2:file1.txt`
+- to see all files and directories of a commit: `git ls-tree HEAD~2`
+- Git objects: Commits, Blobs, Trees, Tags.
+
+16. Unstaging files (version 2.28+): `git restore --staged file1.txt`
+17. Discarding local changes: `git clean -fd`
+18. Restore file to previous version: `git restore --source=HEAD~1 file1.js`
+19. Creating snapshots using gitkraken
+
+#### 3. Browsing History
+
+3. Viewing history
+
+- see all the files that changed in the last commit: `git log --stat --oneline`
+- see the actual changes: `git log --patch --oneline`
+
+4. Formating the log output: `git log --pretty=format: "author: %Cgreen%an %Creset committed the hash: %h on date: %cd " `
+5. Create alias: `git config --global alias.lg "log --pretty=format: '%Cgreen%an %Creset committed the hash: %h on date: %cd' "`
+6. View a commit: `git show HEAD~2 --name-only`, `git show HEAD~2 --name-status`
+7. View changes across 2 commits: `git diff HEAD~2 HEAD file.js` or `... --name-only`
+8. Checking out a commit: `git checkout id`.
+
+- DO NOT MAKE COMMITS, just try out experimental changes.
+- TO see all commits: `git log --oneline --all`.
+
+10. Find bugs with Bisect: `git bisect start`
+
+- Give it a bad commit: `git bisect bad id`
+- Give it a good commit: `git bisect good id`
+- Head moves in the middle, if it's a good commit type `git bisect good` etc
+- At the end: `git bisect reset`
+
+11. Finding contributors: `git shortlog -n -s -e` `git shortlog -n -s -e --before "" --after=""`
+12. View history of file: `git log file.js` `git log --oneline --stat file.js` `git log --oneline --patch file.js`
+13. Restoring deleted file: `git log --oneline -- file.js` The double `--` is to let git recognize that the next is a file. To restore a commit, look at the parent of that commit and `git checkout id file.js` and then `git commit -m 'Restore file.js' `
+14. Blaming: `git blame audience.txt`. Get email: `git blame -e audience.txt`. Get only first 3 lines: `git blame -e -L 1,3 audience.txt`
+15. Tagging: `git tag v1.0`. Tag an erlier commit: `git tag v1.0 id`. To check out: `git checkout v1.0`. See all the tags: `git tag`.
+
+- Annotated tags: `git tag -a v1.0 -m " First version"`. To see tags with messages: `git tag -n`
+- Delete tag: `git tag -d v1.0`
+
+16. Browsing history with vscode: Install extention `GitLense`.
+17. Browsing history with gitkraken.
+
+#### 4. Branching
+
+4. Working with branches:
+
+- To create a branch: `git branch bugfix`
+- Get list of branches: `git branch`
+- Go to branch: `git switch bugfix`
+- Rename branch: `git branch -m bugfix bugfix/signup-form`
+- See commits in all branches: `git log --oneline --all`
+- Delete branch: `git branch -d bugfix/signup-form` Note: If branch is not merged you may force the deletion with a capital `-D`
+
+5. Comparing branches:
+
+- A branch is just a pointer to a commit.
+- Show commits that are not in master: `git log master..bugfix/signup-form`
+- See actuall changes: `git diff master..bugfix/signup-form` Note: If you are on master you can ommit `master..`
+- See only the files that are changed, add: `--name-only` or `--name-status`
+
+6. Stashing:
+
+- In order to switch branches, clean your directory: `git stash push -m "New tax rules."` Note: to enclude untracked files: `-am`
+- `git stash list`
+- `git stash 0`
+- `git stash apply 0`
+- `git stash drop 0`
+- `git stash clear`
+
+7. Merging: a) Fast-forward, b) 3-way
+
+- a) Fast-forward merge: When branches have not diversed.
+- b) 3-way merging: When we add additional commit to master,\
+  git makes a new commit to combine the two branches. So we have 3 commits, master, branch an merging one.
+
+8. Fast forwarding:
+
+- See all branches with graph: `git log --oneline --all --graph`
+- To merge, form master: `git merge bugfix/signup-form`
+- Create and switch: `git switch -C bugfix/login-form`
+- No fast-forward: `git merge --no-ff bugfix/login-form`
+- Note: With 3-way merge, it's easier to delete afterwards a feature we added in a branch.
+- Disable fast-forward meging: a) only in current repo: `git config ff no`, to apply everywhere add: `--global`
+
+10. View merged and unmerged branches.
+
+- `git branch --merged` or `--no-merged`
+
+11. Merge conflicts:
+
+- Note: Do not add new code after resolving a conflict. These are called `evil commits`.
+- After resolving conflict `git add .` and `git commit ...`
+
+12. Tools for resolving conflicts: Kdiff, P4Merge, WinMerge (Windows only)
+
+- Assign P4Merge to be your merge tool, in `.gitconfig`, and then in case of conflict run: `git mergetool`
+- `git merge --abort`
+
+14. Undo a faulty merge and remerge.
+
+- Note: We re-write history. It's fine if commits are only in local repo.
+- `git reset --hard HEAD~1`
+- `git revert -m 1 HEAD` : 1 is for master, 2 for branch
+
+15. Squash merge:
+
+- Say we have 2 commits that are don't have good quality. We make a new commit that combines all the changes in that branch,\
+  and we apply that ontop of master. Use it with small branches with bad history.
+- `git merge --squash bugfix/photo-upload` => files are in staging area. Make a new commit.
+- Note: When doing a squash merge commit, the merged branch, is not included in the merged branches. So remember to delete it.
+
+16. Rebasing: A technic for bringing changes from one branch into another.
+
+- If your master went ahead a few commits, you may rebase the other branch to it and then merge the other branch, to get a linear history.
+- Note: Rebasing re-writes history! ...
+- `git switch feature/shopping-cart` and `git rebase master`
+- In case of conflict: resolve conflict, and `git rebase --continue`
+- Note: P4Merbe creates a file as a back up. Delete it with `git clean -fd` if you don't have any other untracked files.\
+  Or you can set `.gitconfig` to `git config --global mergetool.keepBackup false`
+
+17. Cherry picking: `git cherry-pick id`
+18. Pick a file from another branch: `git restore --source=feature/send-email -- file.js`
+19. Branching in vscode.
+
+### 5. COLLABORATION
 
 - `origin` is a reference to the cloned repo
 - `origin/master` is a remote tracking branch
@@ -168,26 +340,3 @@ Also:
 
 - Start the rebase operation with the parent of the commit you want to drop.\
   `git rebase -i ID~1 or ID^`
-
-### 11. Rewarding a Commit
-
-- To reward a commit message, use interactive rebasing.\
-  In the given options, chose `reword`.
-
-### 12. Re-ordering Commits
-
-- To re-order a commits, use interactive rebasing.\
-  Then just move the commit where you want.
-
-### 13. Squashing Commits
-
-- To squash commits, use interactive rebasing.\
-   Then chose the `squash` option for all children commits. You may reorder them first if needed.\
-  If you want to keep just the name of the parent commit, use `fixup` instead of `squash`.
-
-### 14. Splitting a Commit
-
-- To split a commit, use interactive rebasing.\
-  Chose to edit the commit and the while the HEAD is on the commit you want to split, type `git reset HEAD^`, to go to its parent i.e. to the state you had before you made this commit./
-  Note: default value of `reset` is `mixed` which takes all the changes to the working directory.\
-  Now you can stage and commit them separately.

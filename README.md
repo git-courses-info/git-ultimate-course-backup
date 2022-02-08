@@ -4,6 +4,8 @@ A course from codewithmosh.com
 
 NOTE: These notes go together with the cheat sheet that was provided by the course, which also has some extra notes, about some cmds that where missing.
 
+Check also Kent Dodds: [introduction-to-github](https://egghead.io/lessons/javascript-introduction-to-github)
+
 ### 1. Getting started
 
 6. Configuration: specify: name, email, default editor, line ending. Specify in 3 levels:
@@ -114,7 +116,7 @@ NOTE: These notes go together with the cheat sheet that was provided by the cour
 
 6. Stashing:
 
-- In order to switch branches, clean your directory: `git stash push -m "New tax rules."` Note: to enclude untracked files: `-am`
+- In order to switch branches, clean your directory: `git stash push -m "New tax rules."`. To enclude untracked files: `-am`
 - `git stash list`
 - `git stash 0`
 - `git stash apply 0`
@@ -125,7 +127,7 @@ NOTE: These notes go together with the cheat sheet that was provided by the cour
 
 - a) Fast-forward merge: When branches have not diversed.
 - b) 3-way merging: When we add additional commit to master,\
-  git makes a new commit to combine the two branches. So we have 3 commits, master, branch an merging one.
+  git makes a new commit to combine the two branches. So we have 3 commits, master, branch and merging one.
 
 8. Fast forwarding:
 
@@ -143,12 +145,12 @@ NOTE: These notes go together with the cheat sheet that was provided by the cour
 11. Merge conflicts:
 
 - Note: Do not add new code after resolving a conflict. These are called `evil commits`.
-- After resolving conflict `git add .` and `git commit ...`
+- After resolving conflict `git add .` and `git commit -m "message"`
 
 12. Tools for resolving conflicts: Kdiff, P4Merge, WinMerge (Windows only)
 
 - Assign P4Merge to be your merge tool, in `.gitconfig`, and then in case of conflict run: `git mergetool`
-- `git merge --abort`
+- `git merge --abort` `--continue` `--skip`
 
 14. Undo a faulty merge and remerge.
 
@@ -178,42 +180,61 @@ NOTE: These notes go together with the cheat sheet that was provided by the cour
 
 ### 5. COLLABORATION
 
-- `origin` is a reference to the cloned repo
-- `origin/master` is a remote tracking branch
+5. Cloning:
 
-- git pull
-  warning: Pulling without specifying how to reconcile divergent branches is
+- `git clone .... newName`
+- `git remote` : origin
+- `origin` is a reference to the cloned repo
+- `git remote -v` reference of origin: => origin https://... (fetch), origin https://... (push)
+- `origin/master` is a remote tracking branch
+- `git fetch`: download new commits from remote repo. But are local master is not up to date.\
+  We need to run `git merge origin/master`
+- To download a new commit from remote repo: `git fetch origin`, `git fetch origin branchName`.\
+  Then again the local master branch will be behind.
+- See how local and remote branches are diverging: `git branch -vv`.
+
+7. Pulling: fetch + merge
+
+- `git pull`: If local and remote repos are different, git will make a 3-way merge.\
+  To undo the merge commit: `git reset --hard HEAD~1`.\
+  To add local commits on top of remote: `git pull --rebase`.
+- warning: Pulling without specifying how to reconcile divergent branches is
   discouraged. You can squelch this message by running one of the following
   commands sometime before your next pull:
 
-  - git config pull.rebase false # merge (the default strategy)
-  - git config pull.rebase true # rebase
-  - git config pull.ff only # fast-forward only
+  - `git config pull.rebase false`: merge (the default strategy)
+  - `git config pull.rebase true`: rebase
+  - `git config pull.ff only`: fast-forward only
 
-### .9 Storing Credentials
+8. Pushing:
+
+- `git push`: send new commits to origin
+- `git push origin branchName`...
+
+9. Storing Credentials
 
 - [Credential Storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage)
-- [git-credential-cache](https://git-scm.com/docs/git-credential-cache) Helper to temporarily store passwords in memory  
-   -`git config --global credential.helper cache`
-- If you’re using a Mac, Git comes with an “osxkeychain” mode, which caches credentials in the secure keychain that’s attached to your system account. This method stores the credentials on disk, and they never expire, but they’re encrypted with the same system that stores HTTPS certificates and Safari auto-fills.
-  - `git credential-osxkeychain`
-  - `git config --global credential.helper osxkeychain`
+- [git-credential-cache](https://git-scm.com/docs/git-credential-cache)
+- Helper to temporarily (15') store passwords in memory: `git config --global credential.helper cache`
+- If you’re using a Mac, Git comes with an “osxkeychain” mode, which caches credentials in the secure keychain that is attached to your system account. This method stores the credentials on disk, and they never expire, but they’re encrypted with the same system that stores HTTPS certificates and Safari auto-fills.
+  - Check if keychain helper is installed: `git credential-osxkeychain`
+  - Once you install it, then run: `git config --global credential.helper osxkeychain`
 
-### 10. Sharing tags
+10. Sharing tags
 
-- Tags are ref's that point to specific points in Git history. Tagging is generally used to capture a point in history that is used for a marked version release (i.e. v1. 0.1). A tag is like a branch that doesn't change. [Tagging](https://www.atlassian.com/git/tutorials/inspecting-a-repository/git-tag#:~:text=Tags%20are%20ref's%20that%20point,branch%20that%20doesn't%20change.)
+- Tags are refs that point to specific points in Git history. Tagging is generally used to capture a point in history that is used for a marked version release (i.e. v1. 0.1). A tag is like a branch that doesn't change. [Tagging](https://www.atlassian.com/git/tutorials/inspecting-a-repository/git-tag#:~:text=Tags%20are%20ref's%20that%20point,branch%20that%20doesn't%20change.)
 - By default git doesn't push our `tags` to our repo... So we `git push origin v1.0`
 - To delete it: `git push origin --delete v1.0`
 - Delete it on the local repo: `git tag -d v1.0`
 
-### 11. Releases
+11. Releases (it's a github feature, build on top of tags)
 
 - Use Releases to package your software, along with source code, binary files (e.g. compiled files of the app) and release notes.
 - When you create a Release on github, it will be added to the latest commit.
 
-### 12. Sharing Branches
+12. Sharing Branches
 
-- Similarly to tags, branches are local, private by default.
+- Similarly to tags, branches are local and private by default.
 - Check if a branch has a remote tracking branch: `git branch -vv`
 
         * feature-1 11eb84c 11. Releases
@@ -224,18 +245,18 @@ NOTE: These notes go together with the cheat sheet that was provided by the cour
         origin/HEAD -> origin/main
         origin/main
 
-- So the first time you push a branch: `git push -u origin feature-1`
+- The first time you push a branch: `git push -u origin feature-1`
 - To delete a branch in remote repo: `git push -d origin feature-1`
 - To delete a branch in local repo: `git push -d feature-1`
 
-### 13. Colaboration Workflow
+13. Colaboration Workflow
 
 - If you create a branch in the remote repo and then do `git fetch`, and then run `git branch`, you only see `main`,
-  because when we run `fetch`, we only get the remote branch. So then we need to create a local one and map it to the remote one.
-  - git switch -C feature-1 origin/feature-1
-- Remove tracking branches that are deleted on the remote repo: `git remote prune origin`. Or `git fetch --prune`: git fetch --prune is the best utility for cleaning outdated branches. It will connect to a shared remote repository remote and fetch all remote branch refs. It will then delete remote refs that are no longer in use on the remote repository. [Git Prune](https://www.atlassian.com/git/tutorials/git-prune#:~:text=git%20fetch%20%2D%2Dprune%20is,use%20on%20the%20remote%20repository.)
+  because when we run `fetch`, we only get the remote branch: `origin/feature-1`.\
+  So then we need to create a local one and map it to the remote one: `git switch -C feature-1 origin/feature-1`.\
+- Remove tracking branches that are deleted on the remote repo: `git remote prune origin`. Or `git fetch --prune`: which is the best utility for cleaning outdated branches. It will connect to a shared remote repository remote and fetch all remote branch refs. It will then delete remote refs that are no longer in use on the remote repository. [Git Prune](https://www.atlassian.com/git/tutorials/git-prune#:~:text=git%20fetch%20%2D%2Dprune%20is,use%20on%20the%20remote%20repository.)
 
-### 14. Pull Requests
+14. Pull Requests
 
 - Pull requests let you tell others about changes you've pushed to a branch in a repository on GitHub. Once a pull request is opened, you can discuss and review the potential changes with collaborators and add follow-up commits before your changes are merged into the base branch.
   - **Note: When working with pull requests, keep the following in mind:**
@@ -243,28 +264,39 @@ NOTE: These notes go together with the cheat sheet that was provided by the cour
   - When pushing commits to a pull request, don't force push. Force pushing can corrupt your pull request.[docs](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/about-pull-requests).
 - Pull requests display diffs to compare the changes you made in your topic branch against the base branch that you want to merge your changes into [docs](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/about-comparing-branches-in-pull-requests).
 
-### 15. Resolving Conflicts
+15. Resolving Conflicts
 
-### 16. Issues
+16. Issues
 
 - Track all kind of issues like bagfixes, new features, enhancements, or any kind of ideas we want to discuss in the team.
+- Check the [docs](https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-an-issue)
 
-### 18. Milestones
+17. Labels
+
+- Customize labels in a github repo.
+
+18. Milestones
 
 - Use milestones to track the progress of varius issues.
 - We can add a banch of issues to a milestone, and then see the progress in that milestone.
 
-### 19. Contributing to open-source Projects
+19. Contributing to open-source Projects
 
 - `Fork` the `repo`, `clone` it, make changes, `push`, when ready make a `pull request`, if ok then maintener will close it.
 
-### 20. Keeping a Forked Repository Up to Date
+20. Keeping a Forked Repository Up to Date
 
-- Add a new `remote` -call it `upstreem` or `base` with the address of the **original** `repo`. If the forked repo gets behind, you get a notification in github. Fetch the commits from `upstreem` and then push them to the forked repo. Then if there is a branch where we do work, it's a good practice to merge the main branch to that one, in case there are changes that could effect our work. This will reduce coflicts when mainter would want to close our pull request.
+- Add a new `remote` adress. Call it `upstreem` or `base`, with the address of the **original - base** `repo`.\
+  If the forked repo gets behind, you get a notification in github. Fetch the commits from `base`, megre them to your main branch and then push them to the forked repo.\
+  Then if there is a branch where we do work, it's a good practice to merge the main branch to that one, in case there are changes that could effect our work. This will reduce coflicts when mainter would want to close our pull request.
 
-### 21. Collaboration using VSCode
+21. Collaboration using VSCode
 
-### 21. Collaboration in GitKraken
+- We have limited collaboration tools here. Use `git lens`. With this we can see how many commits back is our master, from the origin.
+- We can push and fetch only the main, no tags and branches.
+- In `Remotes` we can add or remove remotes.
+
+22. Collaboration in GitKraken
 
 - Options:
 - Push a new `branch` to remote... To create a new branch, right click on the last commit of master... Make a commit in VSCode then in GitKraken right click on the new branch and push...
